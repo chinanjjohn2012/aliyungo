@@ -3,18 +3,23 @@ package ecs
 import (
 	"fmt"
 	"testing"
+
+	"github.com/denverdino/aliyungo/common"
 )
 
 func ExampleClient_DescribeInstanceStatus() {
 	fmt.Printf("DescribeInstanceStatus Example\n")
 
 	args := DescribeInstanceStatusArgs{
-		RegionId:   "cn-beijing",
-		ZoneId:     "cn-beijing-b",
-		Pagination: Pagination{1, 1},
+		RegionId: "cn-beijing",
+		ZoneId:   "cn-beijing-b",
+		Pagination: common.Pagination{
+			PageNumber: 1,
+			PageSize:   1,
+		},
 	}
 
-	client := NewClient(TestAccessKeyId, TestAccessKeySecret)
+	client := NewTestClient()
 	instanceStatus, _, err := client.DescribeInstanceStatus(&args)
 
 	if err != nil {
@@ -29,7 +34,7 @@ func ExampleClient_DescribeInstanceStatus() {
 func ExampleClient_DescribeInstanceAttribute() {
 	fmt.Printf("DescribeInstanceAttribute Example\n")
 
-	client := NewClient(TestAccessKeyId, TestAccessKeySecret)
+	client := NewTestClient()
 
 	instanceAttributeType, err := client.DescribeInstanceAttribute(TestInstanceId)
 
@@ -53,7 +58,7 @@ func ExampleClient_DescribeInstanceVncUrl() {
 		InstanceId: TestInstanceId,
 	}
 
-	client := NewClient(TestAccessKeyId, TestAccessKeySecret)
+	client := NewTestClient()
 
 	instanceVncUrl, err := client.DescribeInstanceVncUrl(&args)
 
@@ -67,7 +72,7 @@ func ExampleClient_DescribeInstanceVncUrl() {
 func ExampleClient_StopInstance() {
 	fmt.Printf("Stop Instance Example\n")
 
-	client := NewClient(TestAccessKeyId, TestAccessKeySecret)
+	client := NewTestClient()
 
 	err := client.StopInstance(TestInstanceId, true)
 
@@ -79,7 +84,7 @@ func ExampleClient_StopInstance() {
 func ExampleClient_DeleteInstance() {
 	fmt.Printf("Delete Instance Example")
 
-	client := NewClient(TestAccessKeyId, TestAccessKeySecret)
+	client := NewTestClient()
 
 	err := client.DeleteInstance(TestInstanceId)
 
@@ -89,8 +94,10 @@ func ExampleClient_DeleteInstance() {
 }
 
 func TestECSInstance(t *testing.T) {
-
-	client := NewClient(TestAccessKeyId, TestAccessKeySecret)
+	if TestQuick {
+		return
+	}
+	client := NewTestClient()
 	instance, err := client.DescribeInstanceAttribute(TestInstanceId)
 	if err != nil {
 		t.Fatalf("Failed to describe instance %s: %v", TestInstanceId, err)
@@ -131,7 +138,7 @@ func TestECSInstanceCreationAndDeletion(t *testing.T) {
 		return
 	}
 
-	client := NewClient(TestAccessKeyId, TestAccessKeySecret)
+	client := NewTestClient()
 	instance, err := client.DescribeInstanceAttribute(TestInstanceId)
 	t.Logf("Instance: %++v  %v", instance, err)
 

@@ -1,15 +1,18 @@
 package ecs
 
+import "github.com/denverdino/aliyungo/common"
+
 type ResourceType string
 
 const (
-	ResourceTypeInstance = ResourceType("Instance")
-	ResourceTypeDisk     = ResourceType("Disk")
-	ResourceTypeVSwitch  = ResourceType("VSwitch")
+	ResourceTypeInstance            = ResourceType("Instance")
+	ResourceTypeDisk                = ResourceType("Disk")
+	ResourceTypeVSwitch             = ResourceType("VSwitch")
+	ResourceTypeIOOptimizedInstance = ResourceType("IoOptimized")
 )
 
 type DescribeZonesArgs struct {
-	RegionId Region
+	RegionId common.Region
 }
 
 //
@@ -34,14 +37,14 @@ type ZoneType struct {
 }
 
 type DescribeZonesResponse struct {
-	CommonResponse
+	common.Response
 	Zones struct {
 		Zone []ZoneType
 	}
 }
 
 // DescribeZones describes zones
-func (client *Client) DescribeZones(regionId Region) (zones []ZoneType, err error) {
+func (client *Client) DescribeZones(regionId common.Region) (zones []ZoneType, err error) {
 	args := DescribeZonesArgs{
 		RegionId: regionId,
 	}

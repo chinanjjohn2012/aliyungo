@@ -3,6 +3,7 @@ package ecs
 import (
 	"time"
 
+	"github.com/denverdino/aliyungo/common"
 	"github.com/denverdino/aliyungo/util"
 )
 
@@ -16,7 +17,7 @@ type CreateVSwitchArgs struct {
 }
 
 type CreateVSwitchResponse struct {
-	CommonResponse
+	common.Response
 	VSwitchId string
 }
 
@@ -37,7 +38,7 @@ type DeleteVSwitchArgs struct {
 }
 
 type DeleteVSwitchResponse struct {
-	CommonResponse
+	common.Response
 }
 
 // DeleteVSwitch deletes Virtual Switch
@@ -55,8 +56,7 @@ type DescribeVSwitchesArgs struct {
 	VpcId     string
 	VSwitchId string
 	ZoneId    string
-	RegionId  Region
-	Pagination
+	common.Pagination
 }
 
 type VSwitchStatus string
@@ -81,8 +81,8 @@ type VSwitchSetType struct {
 }
 
 type DescribeVSwitchesResponse struct {
-	CommonResponse
-	PaginationResult
+	common.Response
+	common.PaginationResult
 	VSwitches struct {
 		VSwitch []VSwitchSetType
 	}
@@ -91,8 +91,8 @@ type DescribeVSwitchesResponse struct {
 // DescribeVSwitches describes Virtual Switches
 //
 // You can read doc at http://docs.aliyun.com/#/pub/ecs/open-api/vswitch&describevswitches
-func (client *Client) DescribeVSwitches(args *DescribeVSwitchesArgs) (vswitches []VSwitchSetType, pagination *PaginationResult, err error) {
-	args.validate()
+func (client *Client) DescribeVSwitches(args *DescribeVSwitchesArgs) (vswitches []VSwitchSetType, pagination *common.PaginationResult, err error) {
+	args.Validate()
 	response := DescribeVSwitchesResponse{}
 
 	err = client.Invoke("DescribeVSwitches", args, &response)
@@ -111,7 +111,7 @@ type ModifyVSwitchAttributeArgs struct {
 }
 
 type ModifyVSwitchAttributeResponse struct {
-	CommonResponse
+	common.Response
 }
 
 // ModifyVSwitchAttribute modifies attribute of Virtual Private Cloud
@@ -141,7 +141,7 @@ func (client *Client) WaitForVSwitchAvailable(vpcId string, vswitchId string, ti
 		}
 		timeout = timeout - DefaultWaitForInterval
 		if timeout <= 0 {
-			return getECSErrorFromString("Timeout")
+			return common.GetClientErrorFromString("Timeout")
 		}
 		time.Sleep(DefaultWaitForInterval * time.Second)
 	}

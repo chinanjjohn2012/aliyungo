@@ -3,11 +3,13 @@ package ecs
 import (
 	"testing"
 	"time"
+
+	"github.com/denverdino/aliyungo/common"
 )
 
 func TestVPCCreationAndDeletion(t *testing.T) {
 
-	client := NewClient(TestAccessKeyId, TestAccessKeySecret)
+	client := NewTestClient()
 
 	instance, err := client.DescribeInstanceAttribute(TestInstanceId)
 	if err != nil {
@@ -129,7 +131,7 @@ func TestVPCCreationAndDeletion(t *testing.T) {
 
 }
 
-func testCreateInstanceVpc(t *testing.T, client *Client, regionId Region, vpcId string, vswitchId, imageId string) (instanceId string, sgId string, err error) {
+func testCreateInstanceVpc(t *testing.T, client *Client, regionId common.Region, vpcId string, vswitchId, imageId string) (instanceId string, sgId string, err error) {
 	sgName := "test-security-group"
 	args := CreateSecurityGroupArgs{
 		RegionId:          regionId,
